@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag, ExternalLink, Heart, MessageSquare, Check, Sparkles, SlidersHorizontal } from 'lucide-react';
-import { ShoppableItem } from '../types/interior';
+import { Currency, ShoppableItem } from '../types/interior';
+import { formatCurrency } from '../utils/currency';
 
 interface ShoppableGalleryProps {
   items: ShoppableItem[];
@@ -8,6 +9,7 @@ interface ShoppableGalleryProps {
   onToggleSaveItem: (item: ShoppableItem) => void;
   onAskAboutItem: (item: ShoppableItem) => void;
   styleName: string;
+  currency: Currency;
 }
 
 export const ShoppableGallery: React.FC<ShoppableGalleryProps> = ({
@@ -16,6 +18,7 @@ export const ShoppableGallery: React.FC<ShoppableGalleryProps> = ({
   onToggleSaveItem,
   onAskAboutItem,
   styleName,
+  currency,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
@@ -33,7 +36,7 @@ export const ShoppableGallery: React.FC<ShoppableGalleryProps> = ({
     ? items
     : items.filter((item) => item.category === selectedCategory);
 
-  const totalEstimatedCost = items.reduce((sum, item) => sum + item.estimatedPrice, 0);
+  const totalEstimatedCostUSD = items.reduce((sum, item) => sum + (item.estimatedPriceUSD || item.estimatedPrice), 0);
 
   return (
     <section id="shoppable" className="w-full my-8">
@@ -55,9 +58,9 @@ export const ShoppableGallery: React.FC<ShoppableGalleryProps> = ({
         {/* Room Budget Total Badge */}
         <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
           <div className="text-right">
-            <span className="text-[10px] uppercase font-mono text-slate-400 block">Total Est. Room Cost</span>
-            <span className="font-mono text-base font-bold text-amber-300">
-              ${totalEstimatedCost.toLocaleString()}
+            <span className="text-[10px] uppercase font-mono text-slate-400 block">Total Est. Room Cost ({currency})</span>
+            <span className="font-mono text-lg font-bold text-amber-300">
+              {formatCurrency(totalEstimatedCostUSD, currency)}
             </span>
           </div>
         </div>
@@ -94,6 +97,7 @@ export const ShoppableGallery: React.FC<ShoppableGalleryProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredItems.map((item) => {
           const isSaved = savedItemIds.has(item.id);
+          const priceDisplay = formatCurrency(item.estimatedPriceUSD || item.estimatedPrice, currency);
 
           return (
             <div
@@ -117,9 +121,16 @@ export const ShoppableGallery: React.FC<ShoppableGalleryProps> = ({
                   {item.name}
                 </h3>
 
-                {/* Price */}
-                <div className="mt-1 font-mono text-base font-bold text-amber-300">
-                  {item.priceDisplay}
+                {/* Price in selected Currency (INR or USD) */}
+                <div className="mt-1 flex items-baseline gap-2">
+                  <span className="font-mono text-lg font-bold text-amber-300">
+                    {priceDisplay}
+                  </span>
+                  {currency === 'INR' && (
+                    <span className="text-[11px] font-mono text-slate-500">
+                      (~${(item.estimatedPriceUSD || item.estimatedPrice).toLocaleString()})
+                    </span>
+                  )}
                 </div>
 
                 {/* Description */}
@@ -143,7 +154,7 @@ export const ShoppableGallery: React.FC<ShoppableGalleryProps> = ({
               {/* Action Buttons & Direct Retailer Links */}
               <div className="mt-5 pt-3 border-t border-white/5">
                 <div className="text-[10px] uppercase font-mono text-slate-400 mb-2">
-                  Shop exact / similar at:
+                  Search & Buy at:
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">

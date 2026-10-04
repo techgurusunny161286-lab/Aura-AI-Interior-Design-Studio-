@@ -1,0 +1,8 @@
+{
+	"appId": "com.aura.interiordesign.studio",
+	"appName": "Aura-AI Interior Design Studio",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "https"
+	}
+}

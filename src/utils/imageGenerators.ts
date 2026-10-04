@@ -3,6 +3,14 @@
 export function getRetailerSearchUrl(retailer: string, query: string): string {
   const encoded = encodeURIComponent(query);
   switch (retailer) {
+    case 'Urban Ladder':
+      return `https://www.urbanladder.com/products/search?keywords=${encoded}`;
+    case 'Pepperfry':
+      return `https://www.pepperfry.com/site_product/search?q=${encoded}`;
+    case 'IKEA India':
+      return `https://www.ikea.com/in/en/search/?q=${encoded}`;
+    case 'Amazon India':
+      return `https://www.amazon.in/s?k=${encoded}&i=kitchen`;
     case 'West Elm':
       return `https://www.westelm.com/search/results.html?words=${encoded}`;
     case 'CB2':

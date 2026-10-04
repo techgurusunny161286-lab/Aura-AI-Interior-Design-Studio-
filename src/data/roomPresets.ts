@@ -142,23 +142,25 @@ function makeShoppable(
   description: string,
   searchKeyword: string
 ): ShoppableItem {
+  const inrPrice = Math.round(price * 86);
   return {
     id,
     name,
     category,
     estimatedPrice: price,
-    priceDisplay: `$${price.toLocaleString()}`,
+    estimatedPriceUSD: price,
+    estimatedPriceINR: inrPrice,
+    priceDisplay: `₹${inrPrice.toLocaleString('en-IN')}`,
     styleMatchScore: score,
     materials,
     dimensions,
     description,
     searchQueries: [
+      { retailer: 'Urban Ladder', url: getRetailerSearchUrl('Urban Ladder', searchKeyword) },
+      { retailer: 'Pepperfry', url: getRetailerSearchUrl('Pepperfry', searchKeyword) },
+      { retailer: 'IKEA India', url: getRetailerSearchUrl('IKEA India', searchKeyword) },
+      { retailer: 'Amazon India', url: getRetailerSearchUrl('Amazon India', searchKeyword) },
       { retailer: 'West Elm', url: getRetailerSearchUrl('West Elm', searchKeyword) },
-      { retailer: 'CB2', url: getRetailerSearchUrl('CB2', searchKeyword) },
-      { retailer: 'Wayfair', url: getRetailerSearchUrl('Wayfair', searchKeyword) },
-      { retailer: 'IKEA', url: getRetailerSearchUrl('IKEA', searchKeyword) },
-      { retailer: 'Amazon Home', url: getRetailerSearchUrl('Amazon Home', searchKeyword) },
-      { retailer: 'Pottery Barn', url: getRetailerSearchUrl('Pottery Barn', searchKeyword) },
     ],
   };
 }

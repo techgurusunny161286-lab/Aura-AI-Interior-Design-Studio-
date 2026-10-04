@@ -13,11 +13,15 @@ import { RoomUploader } from './components/RoomUploader';
 import { MoodboardModal } from './components/MoodboardModal';
 
 import { DESIGN_STYLES, PRESET_ROOMS } from './data/roomPresets';
-import { BudgetTier, ChatMessage, ColorSwatch, DesignStyle, PresetRoom, RoomType, ShoppableItem } from './types/interior';
+import { BudgetTier, ChatMessage, ColorSwatch, Currency, DesignStyle, PresetRoom, RoomType, ShoppableItem } from './types/interior';
 import { createRoomSvgDataUrl, getRetailerSearchUrl } from './utils/imageGenerators';
+import { formatCurrency } from './utils/currency';
 import { Sparkles, SlidersHorizontal, RefreshCw } from 'lucide-react';
 
 export default function App() {
+  // State: Currency (Defaults to INR as requested)
+  const [currency, setCurrency] = useState<Currency>('INR');
+
   // State: Current Room
   const [currentRoom, setCurrentRoom] = useState<PresetRoom>(PRESET_ROOMS[0]);
   const [roomName, setRoomName] = useState<string>(PRESET_ROOMS[0].name);
@@ -56,7 +60,7 @@ export default function App() {
     {
       id: 'init-1',
       role: 'assistant',
-      content: `Welcome to your makeover session for the "${PRESET_ROOMS[0].name}". I've initialized the space in **${DESIGN_STYLES[0].name}**—balancing rich American walnut slats, tactile caramel leather, and brass lighting to anchor the natural window sunlight.\n\nTry dragging the comparison slider above, or ask me for refinements like *"Keep this layout but make the rug navy blue"* or *"Find budget seating alternatives"*!`,
+      content: `Welcome to your makeover session for the "${PRESET_ROOMS[0].name}". I've initialized the space in **${DESIGN_STYLES[0].name}**—balancing rich American walnut slats, tactile caramel leather, and brass lighting to anchor the natural window sunlight.\n\nAll procurement and furniture estimates are configured in **Indian Rupees (₹ INR)**. Try dragging the comparison slider above, or ask me for refinements like *"Keep this layout but make the rug navy blue"* or *"Find budget seating alternatives under ₹30,000"*!`,
       timestamp: Date.now(),
     },
   ]);
@@ -139,25 +143,30 @@ export default function App() {
           setActivePalette(data.palette);
         }
         if (data.shoppableItems && Array.isArray(data.shoppableItems) && data.shoppableItems.length > 0) {
-          const formattedItems: ShoppableItem[] = data.shoppableItems.map((item: any, idx: number) => ({
-            id: `ai-${styleId}-${idx}-${Date.now()}`,
-            name: item.name || 'Designer Accent Piece',
-            category: item.category || 'decor',
-            estimatedPrice: item.estimatedPrice || 450,
-            priceDisplay: `$${(item.estimatedPrice || 450).toLocaleString()}`,
-            styleMatchScore: item.styleMatchScore || 95,
-            materials: item.materials || 'Natural Material Blend',
-            dimensions: item.dimensions || 'Standard Living Dimensions',
-            description: item.description || 'Curated to anchor this aesthetic.',
-            searchQueries: [
-              { retailer: 'West Elm', url: getRetailerSearchUrl('West Elm', item.searchKeyword || item.name) },
-              { retailer: 'CB2', url: getRetailerSearchUrl('CB2', item.searchKeyword || item.name) },
-              { retailer: 'Wayfair', url: getRetailerSearchUrl('Wayfair', item.searchKeyword || item.name) },
-              { retailer: 'IKEA', url: getRetailerSearchUrl('IKEA', item.searchKeyword || item.name) },
-              { retailer: 'Amazon Home', url: getRetailerSearchUrl('Amazon Home', item.searchKeyword || item.name) },
-              { retailer: 'Pottery Barn', url: getRetailerSearchUrl('Pottery Barn', item.searchKeyword || item.name) },
-            ],
-          }));
+          const formattedItems: ShoppableItem[] = data.shoppableItems.map((item: any, idx: number) => {
+            const priceUSD = item.estimatedPrice || 450;
+            const priceINR = Math.round(priceUSD * 86);
+            return {
+              id: `ai-${styleId}-${idx}-${Date.now()}`,
+              name: item.name || 'Designer Accent Piece',
+              category: item.category || 'decor',
+              estimatedPrice: priceUSD,
+              estimatedPriceUSD: priceUSD,
+              estimatedPriceINR: priceINR,
+              priceDisplay: `₹${priceINR.toLocaleString('en-IN')}`,
+              styleMatchScore: item.styleMatchScore || 95,
+              materials: item.materials || 'Natural Material Blend',
+              dimensions: item.dimensions || 'Standard Living Dimensions',
+              description: item.description || 'Curated to anchor this aesthetic.',
+              searchQueries: [
+                { retailer: 'Urban Ladder', url: getRetailerSearchUrl('Urban Ladder', item.searchKeyword || item.name) },
+                { retailer: 'Pepperfry', url: getRetailerSearchUrl('Pepperfry', item.searchKeyword || item.name) },
+                { retailer: 'IKEA India', url: getRetailerSearchUrl('IKEA India', item.searchKeyword || item.name) },
+                { retailer: 'Amazon India', url: getRetailerSearchUrl('Amazon India', item.searchKeyword || item.name) },
+                { retailer: 'West Elm', url: getRetailerSearchUrl('West Elm', item.searchKeyword || item.name) },
+              ],
+            };
+          });
           setShoppableItems(formattedItems);
         }
       }
@@ -370,6 +379,8 @@ export default function App() {
         onOpenUpload={() => setIsUploadOpen(true)}
         onOpenMoodboard={() => setIsMoodboardOpen(true)}
         savedItemCount={savedItemIds.size}
+        currency={currency}
+        setCurrency={setCurrency}
       />
 
       {/* Main Workspace Content */}
@@ -409,6 +420,7 @@ export default function App() {
           setBudgetTier={setBudgetTier}
           onCustomStyleSubmit={handleCustomStyleSubmit}
           isLoading={isGenerating}
+          currency={currency}
         />
 
         {/* 3. Core Feature: Context-Aware Consultant Chat Interface */}
@@ -428,6 +440,7 @@ export default function App() {
           onToggleSaveItem={handleToggleSaveItem}
           onAskAboutItem={handleAskAboutItem}
           styleName={activeStyle.name}
+          currency={currency}
         />
       </main>
 
@@ -465,6 +478,7 @@ export default function App() {
         savedItemIds={savedItemIds}
         makeoverImage={makeoverImage}
         originalImage={originalImage}
+        currency={currency}
       />
     </div>
   );

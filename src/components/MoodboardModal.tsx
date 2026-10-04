@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { X, Printer, Download, Sparkles, Check, ExternalLink } from 'lucide-react';
-import { ColorSwatch, DesignStyle, ShoppableItem } from '../types/interior';
+import { ColorSwatch, Currency, DesignStyle, ShoppableItem } from '../types/interior';
+import { formatCurrency } from '../utils/currency';
 
 interface MoodboardModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface MoodboardModalProps {
   savedItemIds: Set<string>;
   makeoverImage: string;
   originalImage: string;
+  currency: Currency;
 }
 
 export const MoodboardModal: React.FC<MoodboardModalProps> = ({
@@ -24,6 +26,7 @@ export const MoodboardModal: React.FC<MoodboardModalProps> = ({
   savedItemIds,
   makeoverImage,
   originalImage,
+  currency,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +36,7 @@ export const MoodboardModal: React.FC<MoodboardModalProps> = ({
     ? items.filter((i) => savedItemIds.has(i.id))
     : items;
 
-  const totalCost = savedOrAllItems.reduce((acc, curr) => acc + curr.estimatedPrice, 0);
+  const totalCostUSD = savedOrAllItems.reduce((acc, curr) => acc + (curr.estimatedPriceUSD || curr.estimatedPrice), 0);
 
   const handlePrint = () => {
     window.print();
@@ -84,9 +87,9 @@ export const MoodboardModal: React.FC<MoodboardModalProps> = ({
             </div>
 
             <div className="text-right">
-              <span className="text-[11px] font-mono text-slate-400 uppercase block">Total Specified Budget</span>
+              <span className="text-[11px] font-mono text-slate-400 uppercase block">Total Specified Budget ({currency})</span>
               <span className="font-mono text-xl font-bold text-amber-300">
-                ${totalCost.toLocaleString()}
+                {formatCurrency(totalCostUSD, currency)}
               </span>
             </div>
           </div>
@@ -160,7 +163,7 @@ export const MoodboardModal: React.FC<MoodboardModalProps> = ({
                     <th className="p-3">Item</th>
                     <th className="p-3 hidden sm:table-cell">Category</th>
                     <th className="p-3 hidden md:table-cell">Dimensions & Materials</th>
-                    <th className="p-3 text-right">Price</th>
+                    <th className="p-3 text-right">Price ({currency})</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-slate-300">
@@ -179,7 +182,7 @@ export const MoodboardModal: React.FC<MoodboardModalProps> = ({
                         {item.dimensions} · {item.materials}
                       </td>
                       <td className="p-3 text-right font-mono font-semibold text-amber-300">
-                        {item.priceDisplay}
+                        {formatCurrency(item.estimatedPriceUSD || item.estimatedPrice, currency)}
                       </td>
                     </tr>
                   ))}

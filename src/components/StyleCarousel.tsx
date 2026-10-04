@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Sparkles, Plus, Check } from 'lucide-react';
-import { BudgetTier, DesignStyle } from '../types/interior';
+import { BudgetTier, Currency, DesignStyle } from '../types/interior';
 
 interface StyleCarouselProps {
   styles: DesignStyle[];
@@ -10,6 +10,7 @@ interface StyleCarouselProps {
   setBudgetTier: (tier: BudgetTier) => void;
   onCustomStyleSubmit: (customName: string, customDetails: string) => void;
   isLoading?: boolean;
+  currency: Currency;
 }
 
 export const StyleCarousel: React.FC<StyleCarouselProps> = ({
@@ -20,6 +21,7 @@ export const StyleCarousel: React.FC<StyleCarouselProps> = ({
   setBudgetTier,
   onCustomStyleSubmit,
   isLoading = false,
+  currency,
 }) => {
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [customStyleName, setCustomStyleName] = useState('');
@@ -71,9 +73,9 @@ export const StyleCarousel: React.FC<StyleCarouselProps> = ({
                   ? 'bg-amber-400 text-slate-950 font-semibold'
                   : 'text-slate-300 hover:text-white'
               }`}
-              title="Accessible pieces under $500"
+              title={currency === 'INR' ? "Accessible pieces under ₹40,000" : "Accessible pieces under $500"}
             >
-              $ Budget
+              {currency === 'INR' ? '₹ Budget' : '$ Budget'}
             </button>
             <button
               onClick={() => setBudgetTier('mid')}
@@ -82,9 +84,9 @@ export const StyleCarousel: React.FC<StyleCarouselProps> = ({
                   ? 'bg-amber-400 text-slate-950 font-semibold'
                   : 'text-slate-300 hover:text-white'
               }`}
-              title="Designer furniture $500 - $2,000"
+              title={currency === 'INR' ? "Designer furniture ₹40,000 - ₹1,50,000" : "Designer furniture $500 - $2,000"}
             >
-              $$ Mid-Range
+              {currency === 'INR' ? '₹₹ Mid-Range' : '$$ Mid-Range'}
             </button>
             <button
               onClick={() => setBudgetTier('luxury')}
@@ -93,9 +95,9 @@ export const StyleCarousel: React.FC<StyleCarouselProps> = ({
                   ? 'bg-amber-400 text-slate-950 font-semibold'
                   : 'text-slate-300 hover:text-white'
               }`}
-              title="High-end luxury & bespoke pieces"
+              title={currency === 'INR' ? "High-end luxury > ₹1,50,000" : "High-end luxury & bespoke pieces"}
             >
-              $$$ Luxury
+              {currency === 'INR' ? '₹₹₹ Luxury' : '$$$ Luxury'}
             </button>
           </div>
 

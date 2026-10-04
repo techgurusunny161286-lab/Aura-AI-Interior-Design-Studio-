@@ -2,6 +2,8 @@ export type RoomType = 'living' | 'bedroom' | 'dining' | 'office' | 'studio' | '
 
 export type BudgetTier = 'budget' | 'mid' | 'luxury';
 
+export type Currency = 'INR' | 'USD';
+
 export interface ColorSwatch {
   hex: string;
   name: string;
@@ -12,14 +14,16 @@ export interface ShoppableItem {
   id: string;
   name: string;
   category: 'seating' | 'lighting' | 'rugs' | 'tables' | 'decor' | 'storage' | 'plants';
-  estimatedPrice: number;
+  estimatedPrice: number; // in USD base
+  estimatedPriceUSD: number;
+  estimatedPriceINR: number;
   priceDisplay: string;
   styleMatchScore: number;
   materials: string;
   dimensions: string;
   description: string;
   searchQueries: {
-    retailer: 'West Elm' | 'CB2' | 'Wayfair' | 'IKEA' | 'Amazon Home' | 'Pottery Barn';
+    retailer: string;
     url: string;
   }[];
 }
