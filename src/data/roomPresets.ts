@@ -1,0 +1,252 @@
+import { DesignStyle, PresetRoom, ShoppableItem } from '../types/interior';
+import { createRoomSvgDataUrl, getRetailerSearchUrl } from '../utils/imageGenerators';
+
+export const DESIGN_STYLES: DesignStyle[] = [
+  {
+    id: 'mid-century',
+    name: 'Mid-Century Modern',
+    tagline: 'Warm walnut, tapered silhouettes, brass accents & iconic lounge seating',
+    description: 'Characterized by clean lines, gentle organic curves, a love for different materials (especially walnut wood and brass), and iconic 1950s modernist functionalism.',
+    keyMaterials: ['American Walnut', 'Caramel Top-Grain Leather', 'Brushed Brass', 'Wool Weave'],
+    recommendedLighting: 'Warm 2700K ambient with statement sputnik or brass arc lighting',
+    palette: [
+      { hex: '#4a2c16', name: 'Warm Walnut', role: 'primary' },
+      { hex: '#c97a3a', name: 'Caramel Leather', role: 'secondary' },
+      { hex: '#4d5f3f', name: 'Olive Velvet', role: 'accent' },
+      { hex: '#d97706', name: 'Warm Ochre', role: 'accent' },
+      { hex: '#faf6f0', name: 'Parchment', role: 'neutral' },
+    ],
+    suggestedPrompts: [
+      'Keep this layout but make the rug navy blue with cream geometric accents',
+      'Change the sofa upholstery to burnt orange bouclé',
+      'Add a walnut credenza under the window with ceramic vessels',
+      'Switch the sputnik chandelier to a sculptural Nelson bubble lamp',
+    ],
+  },
+  {
+    id: 'scandinavian',
+    name: 'Japandi / Scandinavian',
+    tagline: 'Blonde oak, bouclé textures, wabi-sabi paper lamps & quiet serenity',
+    description: 'The intersection of Scandinavian functionality and Japanese wabi-sabi minimalism. Prioritizes natural light, neutral organic textures, fluted light woods, and tactile calm.',
+    keyMaterials: ['Blonde White Oak', 'Textured Cream Bouclé', 'Handmade Ceramic', 'Woven Paper Cord'],
+    recommendedLighting: 'Soft diffused 3000K daylight, paper globe lanterns & low-level warm glow',
+    palette: [
+      { hex: '#e3d6c1', name: 'Blonde White Oak', role: 'primary' },
+      { hex: '#fdfbf7', name: 'Cream Bouclé', role: 'neutral' },
+      { hex: '#849683', name: 'Muted Sage', role: 'accent' },
+      { hex: '#b09b85', name: 'Warm Putty', role: 'secondary' },
+      { hex: '#262626', name: 'Wabi-Sabi Charcoal', role: 'trim' },
+    ],
+    suggestedPrompts: [
+      'Make the rug an ivory ribbed wool Moroccan high-pile',
+      'Add floating oak picture ledges with black line art',
+      'Introduce an oversized indoor olive tree in a terracotta urn',
+      'Swap the coffee table for an organic kidney-shaped travertine slab',
+    ],
+  },
+  {
+    id: 'industrial',
+    name: 'Industrial Modern Loft',
+    tagline: 'Exposed brick, matte black iron, cognac chesterfield & architectural grit',
+    description: 'Raw structural architecture meets comfortable modern furnishings. Combines warehouse exposed brickwork, blackened steel frames, tufted leather, and oversized factory fixtures.',
+    keyMaterials: ['Exposed Red Brick', 'Matte Black Steel', 'Distressed Cognac Leather', 'Reclaimed Pine'],
+    recommendedLighting: 'Warm Edison filament glow 2200K, steel cage pendants & task floor lamps',
+    palette: [
+      { hex: '#9a4131', name: 'Heritage Brick', role: 'primary' },
+      { hex: '#78350f', name: 'Cognac Leather', role: 'secondary' },
+      { hex: '#18181b', name: 'Matte Steel', role: 'trim' },
+      { hex: '#52525b', name: 'Poured Concrete', role: 'neutral' },
+      { hex: '#ca8a04', name: 'Vintage Brass', role: 'accent' },
+    ],
+    suggestedPrompts: [
+      'Make the rug a faded vintage Turkish medallion runner',
+      'Add black metal open bookshelves with industrial pipe brackets',
+      'Add neon typography wall art reading "NOIR"',
+      'Swap the coffee table for an industrial factory cart with cast iron wheels',
+    ],
+  },
+  {
+    id: 'biophilic',
+    name: 'Biophilic Modern',
+    tagline: 'Living green wall, organic travertine stone, woven cane & botanical wellness',
+    description: 'Deeply connects inhabitants with the natural world through living plant walls, organic stone forms, woven bamboo and cane, natural unbleached linens, and abundant sunlight.',
+    keyMaterials: ['Living Botanical Foliage', 'Honed Travertine Stone', 'Natural Cane & Bamboo', 'Unbleached Linen'],
+    recommendedLighting: 'Bright natural circadian daylight (4000K daylight shifting to 2700K sunset)',
+    palette: [
+      { hex: '#15803d', name: 'Botanical Emerald', role: 'primary' },
+      { hex: '#f5efe6', name: 'Honed Travertine', role: 'neutral' },
+      { hex: '#c29a67', name: 'Natural Jute', role: 'secondary' },
+      { hex: '#c25e2e', name: 'Warm Terracotta', role: 'accent' },
+      { hex: '#2d4a3e', name: 'Deep Forest', role: 'trim' },
+    ],
+    suggestedPrompts: [
+      'Make the rug a circular natural braided jute mat',
+      'Add hanging macramé planters with string-of-pearls and golden pothos',
+      'Introduce a solid ash wood dining table with live-edge finish',
+      'Add sheer airy linen curtains that billow in the breeze',
+    ],
+  },
+  {
+    id: 'art-deco',
+    name: 'Art Deco Luxury',
+    tagline: 'Fluted emerald velvet, polished brass molding, Calacatta marble & jewel tones',
+    description: 'Glamour, geometric symmetry, and decadent materials. Channeling 1920s high style with fluted channel tufting, polished brass inlays, Calacatta marble, and dramatic jewel tones.',
+    keyMaterials: ['Emerald Silk Velvet', 'Polished Champagne Brass', 'Calacatta Gold Marble', 'Smoked Mirror'],
+    recommendedLighting: 'Warm crystal globe pendants and upward brass wall sconces',
+    palette: [
+      { hex: '#064e3b', name: 'Deep Emerald', role: 'primary' },
+      { hex: '#d4af37', name: 'Polished Brass', role: 'accent' },
+      { hex: '#0f172a', name: 'Midnight Navy', role: 'secondary' },
+      { hex: '#fafafa', name: 'Calacatta White', role: 'neutral' },
+      { hex: '#581c87', name: 'Plum Velvet', role: 'accent' },
+    ],
+    suggestedPrompts: [
+      'Make the rug a deep sapphire blue with metallic gold geometric border',
+      'Add a polished brass bar cart with crystal decanters',
+      'Switch the sofa to dusty rose velvet with brass plinth base',
+      'Add floor-to-ceiling brass frame wall molding with smoked glass panels',
+    ],
+  },
+  {
+    id: 'coastal',
+    name: 'Coastal Mediterranean',
+    tagline: 'Whitewashed lime plaster, sun-bleached driftwood, cerulean linen & clay urns',
+    description: 'Breezy Aegean and Balearic simplicity. Sun-drenched whitewashed lime plaster, bleached driftwood, rustic terracotta urns, cerulean blue accents, and relaxed slipcovered linen.',
+    keyMaterials: ['Whitewashed Lime Plaster', 'Bleached Driftwood', 'Aegean Blue Linen', 'Handmade Terracotta'],
+    recommendedLighting: 'Crisp bright coastal sun with woven raffia pendant lanterns for evening',
+    palette: [
+      { hex: '#0284c7', name: 'Aegean Cerulean', role: 'accent' },
+      { hex: '#ffffff', name: 'Lime Whitewash', role: 'neutral' },
+      { hex: '#d6d3d1', name: 'Sun-Bleached Oak', role: 'primary' },
+      { hex: '#c2410c', name: 'Terracotta Clay', role: 'secondary' },
+      { hex: '#0369a1', name: 'Deep Mediterranean', role: 'trim' },
+    ],
+    suggestedPrompts: [
+      'Make the rug a cobalt blue striped flat-weave kilim',
+      'Add oversized Greek terracotta amphora floor urns with dried olive branches',
+      'Add woven rattan hanging egg chair with indigo pillows',
+      'Install exposed whitewashed ceiling timber beams',
+    ],
+  },
+];
+
+// Helper to construct shoppable items with retailer links
+function makeShoppable(
+  id: string,
+  name: string,
+  category: ShoppableItem['category'],
+  price: number,
+  score: number,
+  materials: string,
+  dimensions: string,
+  description: string,
+  searchKeyword: string
+): ShoppableItem {
+  return {
+    id,
+    name,
+    category,
+    estimatedPrice: price,
+    priceDisplay: `$${price.toLocaleString()}`,
+    styleMatchScore: score,
+    materials,
+    dimensions,
+    description,
+    searchQueries: [
+      { retailer: 'West Elm', url: getRetailerSearchUrl('West Elm', searchKeyword) },
+      { retailer: 'CB2', url: getRetailerSearchUrl('CB2', searchKeyword) },
+      { retailer: 'Wayfair', url: getRetailerSearchUrl('Wayfair', searchKeyword) },
+      { retailer: 'IKEA', url: getRetailerSearchUrl('IKEA', searchKeyword) },
+      { retailer: 'Amazon Home', url: getRetailerSearchUrl('Amazon Home', searchKeyword) },
+      { retailer: 'Pottery Barn', url: getRetailerSearchUrl('Pottery Barn', searchKeyword) },
+    ],
+  };
+}
+
+export const PRESET_ROOMS: PresetRoom[] = [
+  {
+    id: 'living-room-1',
+    name: 'Modern Apartment Living Room',
+    roomType: 'living',
+    dimensions: '18\' x 14\' (252 sq ft) · 9ft ceiling',
+    description: 'Unfurnished living space with oak parquet flooring, bare neutral walls, and a large sunlit picture window.',
+    originalImage: createRoomSvgDataUrl('original', 'living'),
+    makeovers: {
+      'mid-century': createRoomSvgDataUrl('mid-century', 'living'),
+      'scandinavian': createRoomSvgDataUrl('scandinavian', 'living'),
+      'industrial': createRoomSvgDataUrl('industrial', 'living'),
+      'biophilic': createRoomSvgDataUrl('biophilic', 'living'),
+      'art-deco': createRoomSvgDataUrl('art-deco', 'living'),
+      'coastal': createRoomSvgDataUrl('coastal', 'living'),
+    },
+    defaultShoppableItems: {
+      'mid-century': [
+        makeShoppable('mc-1', 'Haven Velvet Sectional in Olive', 'seating', 1899, 98, 'Performance Velvet, Solid Walnut Legs', '104"W x 64"D x 32"H', 'Low-profile silhouette with tailored piping and high-resiliency foam cushions.', 'olive velvet sectional sofa walnut legs'),
+        makeShoppable('mc-2', 'Caramel Leather Lounge Chair & Ottoman', 'seating', 1249, 99, 'Top-Grain Italian Leather, Molded Walnut Plywood', '33"W x 33"D x 32"H', 'Inspired by iconic 1956 lounge design with die-cast aluminum swivel base.', 'eames style caramel leather lounge chair ottoman'),
+        makeShoppable('mc-3', 'Aalto Fluted Walnut Coffee Table', 'tables', 599, 95, 'FSC Certified American Walnut Veneer', '48"W x 24"D x 16"H', 'Curved racetrack silhouette with fluted tambour detailing around pedestal.', 'fluted walnut coffee table oval'),
+        makeShoppable('mc-4', 'Mid-Century Brass Sputnik Chandelier', 'lighting', 349, 97, 'Brushed Brass, 12-Light E26', '28" Diameter x 24"H', 'Dynamic radiating brass arms creating a brilliant focal point overhead.', 'brass sputnik chandelier 12 light'),
+        makeShoppable('mc-5', 'Geometric Bauhaus Wool Area Rug', 'rugs', 620, 94, '100% Hand-Tufted New Zealand Wool', '8\' x 10\'', 'Warm ochre, deep navy and cream geometric lines with dense 0.6" pile.', 'mid century geometric wool rug ochre cream 8x10'),
+        makeShoppable('mc-6', 'Ceramic Cylinder Planter with Teak Stand', 'plants', 160, 92, 'High-Fired Stoneware, Solid Teak Base', '14" Dia x 22"H', 'Clean architectural vessel paired with an indoor fiddle-leaf fig tree.', 'ceramic cylinder planter with wooden teak stand'),
+      ],
+      'scandinavian': [
+        makeShoppable('sc-1', 'Soren Curved Bouclé Sectional', 'seating', 2199, 99, 'Textured Tactile Bouclé, Solid Beech Frame', '112"W x 70"D x 30"H', 'Serene organic curves and deep, cloud-like sink-in comfort.', 'curved boucle cream sectional sofa'),
+        makeShoppable('sc-2', 'Kanso Fluted White Oak Coffee Table', 'tables', 680, 96, 'Solid White Oak, Water-based Matte Lacquer', '36" Dia x 15"H', 'Subtle Japandi architectural ribbing with round floating plinth table top.', 'fluted blonde oak round coffee table'),
+        makeShoppable('sc-3', 'Ribbed Wool & Viscose Ivory Rug', 'rugs', 750, 97, 'Hand-Woven New Zealand Wool Blend', '9\' x 12\'', 'Tactile high-low ribbed pile offering quiet luxury and thermal warmth underfoot.', 'high pile ribbed ivory wool rug 9x12'),
+        makeShoppable('sc-4', 'Akari-Inspired Rice Paper Pendant Light', 'lighting', 220, 98, 'Handmade Mulberry Washi Paper, Bamboo Ribbing', '24" Dia x 18"H', 'Diffuses harsh glare into a warm, gentle lantern glow throughout the space.', 'japanese paper noguchi style pendant lamp 24 inch'),
+        makeShoppable('sc-5', 'Faux Mission Olive Tree in Clay Pot', 'plants', 240, 93, 'Silk Botanical, Handcrafted Terracotta', '7ft Tall x 36" Spread', 'Airy, delicate silver-green foliage bringing organic life without maintenance.', 'tall olive tree in terracotta urn 7ft'),
+      ],
+      'industrial': [
+        makeShoppable('ind-1', 'Fitzgerald Cognac Leather Chesterfield', 'seating', 2499, 98, 'Distressed Saddle Leather, Corner-Blocked Oak', '90"W x 38"D x 31"H', 'Deep diamond button-tufting with classic rolled arms and vintage patina.', 'distressed cognac leather chesterfield sofa'),
+        makeShoppable('ind-2', 'Iron & Reclaimed Rail Timber Coffee Table', 'tables', 540, 96, 'Reclaimed Douglas Fir, Industrial Cast Iron', '50"W x 26"D x 18"H', 'Authentic salvaged wood grain supported by heavy-duty black iron base.', 'reclaimed wood and black iron industrial coffee table'),
+        makeShoppable('ind-3', 'Matte Black Arc Overarching Floor Lamp', 'lighting', 290, 97, 'Cast Iron Weighted Base, Powder-Coated Carbon Steel', '82" Reach x 86"H', 'Sweeps dramatically over conversational seating with adjustable dome shade.', 'matte black arc floor lamp oversized'),
+        makeShoppable('ind-4', 'Distressed Charcoal Overdyed Area Rug', 'rugs', 480, 94, 'Printed Poly-Chenille with Vintage Fade', '8\' x 10\'', 'Timeworn faded medallion pattern with low-profile spill-resistant pile.', 'distressed charcoal vintage anatolian rug 8x10'),
+      ],
+      'biophilic': [
+        makeShoppable('bio-1', 'Luxe Living Wall Plant Module Kit', 'decor', 650, 98, 'Recycled ABS, Drip Irrigation Ready', '48"W x 72"H', 'Modular vertical indoor garden system holding up to 36 lush houseplants.', 'indoor living plant wall vertical garden kit'),
+        makeShoppable('bio-2', 'Monolith Honed Travertine Coffee Table', 'tables', 890, 99, 'Natural Italian Travertine, Honed Matte Finish', '44"W x 28"D x 15"H', 'Sculptural low plinth cut from authentic porous stone with unique veining.', 'honed travertine stone coffee table plinth'),
+        makeShoppable('bio-3', 'Bespoke Braided Natural Jute Rug', 'rugs', 420, 96, '100% Sustainable Organic Jute Fiber', '8\' Round', 'Coil-woven concentric rings providing rich earthy texture and acoustic dampening.', 'round braided natural jute rug 8ft'),
+        makeShoppable('bio-4', 'Woven Cane & Solid Ash Lounge Chair', 'seating', 580, 95, 'Natural French Rattan Weave, Solid Ash', '28"W x 30"D x 31"H', 'Breathable open weave with mid-century lines and ergonomic reclining angle.', 'cane and wood armchair french cane lounge'),
+      ],
+      'art-deco': [
+        makeShoppable('ad-1', 'Gatsby Fluted Emerald Velvet Sofa', 'seating', 2399, 98, 'Heavyweight Cotton Velvet, Polished Brass Plinth', '96"W x 36"D x 32"H', 'Dramatic vertical fluted channels with jewel-tone luster and brass perimeter.', 'fluted emerald green velvet sofa brass base'),
+        makeShoppable('ad-2', 'Calacatta Gold Marble Oval Cocktail Table', 'tables', 920, 97, 'Authentic Calacatta Marble, Brushed Brass Legs', '46"W x 24"D x 17"H', 'White marble with rich golden-grey veining framed by gleaming brass geometry.', 'calacatta gold marble coffee table brass legs'),
+        makeShoppable('ad-3', 'Metropolis Multi-Tier Brass Chandelier', 'lighting', 580, 96, 'Solid Brass, Frosted Ribbed Glass Globes', '32" Dia x 28"H', 'Cascading architectural tiers evoking 1920s skyscraper elegance.', 'art deco brass globe chandelier tiered'),
+        makeShoppable('ad-4', 'Geometric Arch Polished Brass Floor Mirror', 'decor', 440, 95, 'Cast Aluminum with Brass Electroplate, Beveled Glass', '36"W x 72"H', 'Statement leaner mirror with sunburst arch crest reflecting ambient light.', 'arch brass floor leaner mirror sunburst'),
+      ],
+      'coastal': [
+        makeShoppable('coa-1', 'Mykonos Washed Belgian Linen Sectional', 'seating', 2699, 99, '100% Pre-Washed European Linen, Feather Blend', '108"W x 68"D x 33"H', 'Casual slipcovered tailoring with machine-washable natural linen covers.', 'white slipcovered linen sectional sofa'),
+        makeShoppable('coa-2', 'Sun-Bleached Driftwood Coffee Table', 'tables', 640, 95, 'Reclaimed Teak and Bleached Mango Wood', '48"W x 26"D x 16"H', 'Weathered organic texture reminiscent of sun-drenched coastal dunes.', 'bleached wood coastal coffee table'),
+        makeShoppable('coa-3', 'Hand-Painted Mediterranean Terracotta Urn', 'decor', 210, 94, 'Hand-Thrown Earthenware, Glazed Indigo Rings', '16" Dia x 26"H', 'Handcrafted pottery accent for olive branches or statement corner focal point.', 'large terracotta floor urn amphora'),
+        makeShoppable('coa-4', 'St. Tropez Handwoven Raffia Pendant Light', 'lighting', 280, 96, 'Natural Raffia Fringe, Powder-Coated Metal Ring', '22" Dia x 20"H', 'Casts soft tropical striped shadow patterns when illuminated in the evening.', 'woven raffia fringe pendant light natural'),
+      ],
+    },
+  },
+  {
+    id: 'bedroom-1',
+    name: 'Serene Master Suite',
+    roomType: 'bedroom',
+    dimensions: '16\' x 13\' (208 sq ft) · 9ft ceiling',
+    description: 'Empty bedroom space with neutral walls, soft carpeting, and dual high windows awaiting headboard and nightstand styling.',
+    originalImage: createRoomSvgDataUrl('original', 'bedroom'),
+    makeovers: {
+      'mid-century': createRoomSvgDataUrl('mid-century', 'bedroom'),
+      'scandinavian': createRoomSvgDataUrl('scandinavian', 'bedroom'),
+      'industrial': createRoomSvgDataUrl('industrial', 'bedroom'),
+      'biophilic': createRoomSvgDataUrl('biophilic', 'bedroom'),
+      'art-deco': createRoomSvgDataUrl('art-deco', 'bedroom'),
+      'coastal': createRoomSvgDataUrl('coastal', 'bedroom'),
+    },
+    defaultShoppableItems: {
+      'scandinavian': [
+        makeShoppable('bed-sc-1', 'Nordic White Oak Floating Platform Bed', 'seating', 1450, 98, 'FSC White Oak, Integrated Slat System', 'Queen (66"W x 86"L x 36"H)', 'Clean Japanese joinery with recessed floating plinth base.', 'white oak floating platform bed queen'),
+        makeShoppable('bed-sc-2', 'Washed Organic Linen Duvet Set in Sage', 'decor', 240, 97, '100% French Flax Linen, Stone Washed', 'Queen Size', 'Soft breathable textured linen with coconut button closures.', 'washed organic french linen duvet cover sage green'),
+        makeShoppable('bed-sc-3', 'Fluted Oak Sconce with Opal Glass Globe', 'lighting', 140, 95, 'Solid Oak, Handblown Frosted Glass', '6"W x 8"D x 12"H', 'Plug-in or hardwire bedside wall lamp with rotary dimmer switch.', 'fluted oak wood wall sconce frosted globe'),
+      ],
+      'mid-century': [
+        makeShoppable('bed-mc-1', 'Walnut Spindle Platform Bed', 'seating', 1299, 98, 'Solid American Walnut, Tapered Legs', 'King (80"W x 86"L x 44"H)', 'Iconic mid-century spindle headboard with warm satin wax finish.', 'mid century walnut spindle bed king'),
+        makeShoppable('bed-mc-2', 'Mid-Century 3-Drawer Walnut Nightstand', 'storage', 420, 96, 'Walnut Veneer, Antique Brass Drawer Pulls', '24"W x 18"D x 24"H', 'Smooth self-closing drawers with felt-lined top jewelry tray.', 'mid century walnut 3 drawer nightstand brass hardware'),
+        makeShoppable('bed-mc-3', 'Brass Conical Articulating Bedside Lamp', 'lighting', 180, 94, 'Solid Brass, Matte Black Cone Shade', '8" Base x 22"H', 'Directional reading task lighting with dual joint articulation.', 'brass and matte black mid century desk lamp articulating'),
+      ],
+    },
+  },
+];
